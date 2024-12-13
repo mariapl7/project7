@@ -1,7 +1,13 @@
-from api import HHAPI
-from db import Database
+from src.api import HHAPI
+from src.db import Database
+from src.db_manager import DBManager
+from src.interaction import main_menu
+
 
 def main():
+    """
+    Основная функция для выполнения скрипта.
+    """
     # Здесь вы можете указать интересующие вас компании
     companies_ids = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']
 
@@ -22,11 +28,14 @@ def main():
         for vacancy in vacancies:
             db.cursor.execute(
                 "INSERT INTO vacancies (title, salary_min, salary_max, employer_id) VALUES (%s, %s, %s, %s)",
-                (vacancy['name'], vacancy.get('salary', {}).get('from'), vacancy.get('salary', {}).get('to'), employer_id)
+                (vacancy['name'], vacancy.get('salary', {}).get('from'),
+                 vacancy.get('salary', {}).get('to'), employer_id)
             )
 
     db.conn.commit()
+    main_menu(DBManager(db))
     db.close()
+
 
 if __name__ == "__main__":
     main()
