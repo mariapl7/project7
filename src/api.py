@@ -6,6 +6,7 @@ class HHAPI:
 
     @staticmethod
     def get_companies(companies):
+        """Получает данные о компаниях по их ID."""
         companies_data = []
         for company in companies:
             response = requests.get(f"{HHAPI.BASE_URL}/employers/{company}")
@@ -15,6 +16,7 @@ class HHAPI:
 
     @staticmethod
     def get_vacancies(company_id):
+        """Получает вакансии для определенной компании по ее ID."""
         vacancies = []
         response = requests.get(f"{HHAPI.BASE_URL}/vacancies?employer_id={company_id}")
         if response.status_code == 200:
