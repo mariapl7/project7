@@ -1,17 +1,18 @@
 import psycopg2
-from psycopg2 import sql
+from typing import Optional
 
 
 class Database:
-    def __init__(self, dbname, user, password, host='localhost', port='5432'):
+    def __init__(self, dbname: str, user: str, password: str, host: str = 'localhost', port: str = '5432') -> None:
         """Создает подключение к базе данных PostgreSQL."""
         try:
             self.conn = psycopg2.connect(dbname=dbname, user=user, password=password, host=host, port=port)
             self.cursor = self.conn.cursor()
         except Exception as e:
-            print(f"Ошибка подключения к базе данных: {e}")
+            raise Exception(f"Ошибка подключения к базе данных: {e}")
 
-    def create_tables(self):
+    def create_tables(self) -> None:
+        """Создает таблицы в базе данных, если они не существуют."""
         try:
             create_employers_table = """
                 CREATE TABLE IF NOT EXISTS employers (
@@ -20,7 +21,6 @@ class Database:
                     vacancies_count INTEGER
                 );
             """
-
             create_vacancies_table = """
                 CREATE TABLE IF NOT EXISTS vacancies (
                     id SERIAL PRIMARY KEY,
@@ -36,12 +36,12 @@ class Database:
             self.cursor.execute(create_vacancies_table)
             self.conn.commit()
         except Exception as e:
-            print(f"Ошибка при создании таблиц: {e}")
+            raise Exception(f"Ошибка при создании таблиц: {e}")
 
-    def close(self):
+    def close(self) -> None:
         """Закрывает соединение с базой данных."""
         try:
             self.cursor.close()
             self.conn.close()
         except Exception as e:
-            print(f"Ошибка при закрытии соединения: {e}")
+            raise Exception(f"Ошибка при закрытии соединения: {e}")
