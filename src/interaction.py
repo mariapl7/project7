@@ -1,28 +1,43 @@
-from typing import Union
-from src.db_manager import DBManager
+from typing import List, Tuple
 
 
-def main_menu(db_manager: 'DBManager') -> None:
+def print_companies_and_vacancies(companies: List[Tuple[str, int]]) -> None:
+    """Печатает компании и количество их вакансий."""
+    if not companies:
+        print("Нет доступных компаний.")
+        return
+    print("\nКомпании и количество вакансий:")
+    for name, count in companies:
+        print(f"{name}: {count} вакансий")
+    print()
+
+
+def print_all_vacancies(vacancies: List[Tuple[str, str, int, int]]) -> None:
+    """Печатает список всех вакансий."""
+    if not vacancies:
+        print("Нет доступных вакансий.")
+        return
+    print("\nСписок всех вакансий:")
+    for title, company, salary_min, salary_max in vacancies:
+        salary_range = f"{salary_min} - {salary_max}" if salary_min and salary_max else "Не указана"
+        print(f"Вакансия: {title}, Компания: {company}, Зарплата: {salary_range}")
+    print()
+
+
+def main_menu(db_manager) -> None:
     """Главное меню для взаимодействия с пользователем."""
     while True:
         print("1 - Получить компании и количество вакансий")
         print("2 - Получить все вакансии")
-        print("3 - Получить среднюю зарплату")
-        print("4 - Получить вакансии с зарплатой выше средней")
-        print("5 - Получить вакансии по ключевому слову")
         print("0 - Выход")
 
-        choice: str = input("Выберите опцию: ")
+        choice = input("Выберите опцию: ")
         if choice == '1':
-            print(db_manager.get_companies_and_vacancies_count())
+            print_companies_and_vacancies(db_manager.get_companies_and_vacancies_count())
         elif choice == '2':
-            print(db_manager.get_all_vacancies())
-        elif choice == '3':
-            print(db_manager.get_avg_salary())
-        elif choice == '4':
-            print(db_manager.get_vacancies_with_higher_salary())
-        elif choice == '5':
-            keyword: str = input("Введите ключевое слово: ")
-            print(db_manager.get_vacancies_with_keyword(keyword))
+            print_all_vacancies(db_manager.get_all_vacancies())
         elif choice == '0':
+            print("Выход из программы.")
             break
+        else:
+            print("Неверный выбор. Пожалуйста, попробуйте снова.")
